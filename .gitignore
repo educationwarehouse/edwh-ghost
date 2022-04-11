@@ -1,0 +1,6 @@
+test.py
+.idea
+build
+*.egg-info
+*.pyc
+__pycache__
