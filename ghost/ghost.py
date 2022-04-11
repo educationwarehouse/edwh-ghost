@@ -199,6 +199,9 @@ class GhostAdmin:
             string: Authentication token that can be used in headers
         """
 
+        if not (self.adminAPIKey and self.contentAPIKey):
+            raise ValueError("Please enter a valid admin and content api key!")
+
         if api_version is None:
             api_version = self.api_version
 
