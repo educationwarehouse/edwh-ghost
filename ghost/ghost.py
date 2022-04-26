@@ -1018,6 +1018,12 @@ class GhostAdmin:
         """
         return self._getByFilter(filter, "authors", "content")
 
+    def authors(self, *, limit=None, page=None, order=None, fields=None, **filter):
+        # todo: docs
+        args = self._create_args(locals())
+
+        return self.getAuthorsByFilter(args)
+
     # admin/themes
     def getThemes(self):
         """
