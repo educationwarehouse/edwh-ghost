@@ -12,9 +12,13 @@ from datetime import datetime as dt
 from io import BytesIO
 
 from attr import define, field
-from typing import BinaryIO
+from typing import BinaryIO, Iterable
 
 MAX_ERROR_LIMIT = 3
+
+
+def is_iterable(value):
+    return isinstance(value, Iterable) and not isinstance(value, str)
 
 
 @define
@@ -80,6 +84,8 @@ class GhostAdmin:
     headers: dict = field(init=False, repr=False)
     api_version: int = "v4"  # or v3
 
+    _session = requests.Session()
+
     def __attrs_post_init__(self):
         """
         Setup the JWT Authentication headers
@@ -126,17 +132,17 @@ class GhostAdmin:
         error_count = 0
         while error_count < MAX_ERROR_LIMIT:
             if verb == "get":
-                resp = requests.get(url, headers=headers, params=params)
+                resp = self._session.get(url, headers=headers, params=params)
             elif verb == "post":
-                resp = requests.post(
+                resp = self._session.post(
                     url, headers=headers, params=params, files=files, json=json
                 )
             elif verb == "put":
-                resp = requests.put(
+                resp = self._session.put(
                     url, headers=headers, params=params, files=files, json=json
                 )
             elif verb == "delete":
-                resp = requests.delete(url, headers=headers, params=params)
+                resp = self._session.delete(url, headers=headers, params=params)
             else:
                 raise ValueError(f"Unknown verb: {verb}")
             if resp.status_code == 401 and not error_count:
@@ -345,6 +351,8 @@ class GhostAdmin:
             list: list of relevant objects
         """
 
+        # todo: make parameters keyword args for ease of use
+
         filter["formats"] = "html,mobiledoc"
         result = self.get(f"{api}/{type}", params=filter)
         if result.ok:
@@ -359,6 +367,46 @@ class GhostAdmin:
             ]  # posts = list with 1 element of dict with key 'errors'
 
         return posts
+
+    def _list_join(self, value, paren='square'):
+        value = ','.join(value)
+        if paren == 'square':
+            return f'[{value}]'
+        elif paren == 'round':
+            return f'({value})'
+        else:
+            # todo: other?
+            return value
+
+    def _filters_to_ghost(self, filters):
+        ghost_filters = []
+
+        for key, value in filters.items():
+            if is_iterable(value):
+                value = self._list_join(value)
+
+            ghost_filters.append(
+                f'{key}:{value}'
+            )
+
+        return '+'.join(ghost_filters)
+
+    def _create_args(self, d):
+        d.pop('self')
+
+        args = {}
+
+        for key, value in d.items():
+            if value is None:
+                continue
+            if isinstance(value, dict):
+                value = self._filters_to_ghost(value)
+            elif is_iterable(value):
+                value = self._list_join(value, paren=False)
+
+            args[key] = value
+
+        return args
 
     def _create(
             self,
@@ -604,6 +652,12 @@ class GhostAdmin:
 
         return [post for post in all_posts if post[property] == title]
 
+    def posts(self, *, limit=None, page=None, order=None, fields=None, **filter):
+        # todo: docs
+        args = self._create_args(locals())
+
+        return self.getPostsByFilter(args)
+
     def createPost(
             self,
             title,
@@ -760,6 +814,12 @@ class GhostAdmin:
         """
 
         return self._getByFilter(filter, "pages")
+
+    def pages(self, *, limit=None, page=None, order=None, fields=None, **filter):
+        # todo: docs
+        args = self._create_args(locals())
+
+        return self.getPagesByFilter(args)
 
     def createPage(
             self,
@@ -1150,6 +1210,12 @@ class GhostAdmin:
             list
         """
         return self._getByFilter(filter, "tags", "content")
+
+    def tags(self, *, limit=None, page=None, order=None, **filter):
+        # todo: docs
+        args = self._create_args(locals())
+
+        return self.getTagsByFilter(args)
 
 
 def demo():
