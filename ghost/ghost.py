@@ -426,7 +426,7 @@ class GhostAdmin:
         It takes a dictionary of arguments, and returns a dictionary of arguments
 
         Args:
-          d: the dictionary of parameters
+          d (dict): the dictionary of parameters
 
         Returns:
           A dictionary of the arguments that are being passed to the query.
@@ -702,7 +702,7 @@ class GhostAdmin:
           page (int): The page number to return.
           order (str): The order in which to sort the results.
           fields (list): A list of fields to return.
-          filter (dict): key-value pairs to filter data on
+          **filter: key-value pairs to filter data on
 
         Returns:
           A list of posts
@@ -737,7 +737,7 @@ class GhostAdmin:
             status (string): 'published' or 'draft'
             featured (bool): if the post should be featured
             featured_image (string): the image url (e.g. "content/images/2020/09/featureImage1.jpg" -> see imageUpload()
-            slug (string): [todo]
+            slug (string): the slug of the post
 
         Returns:
             string: if the creation was successful or not
@@ -877,7 +877,7 @@ class GhostAdmin:
           page (int): The page number to return.
           order (str): The order in which to sort the results.
           fields (list): A list of fields to return.
-          filter (dict): key-value pairs to filter data on
+          **filter: key-value pairs to filter data on
 
         Returns:
           A list of pages
@@ -1084,7 +1084,19 @@ class GhostAdmin:
         return self._getByFilter(filter, "authors", "content")
 
     def authors(self, *, limit=None, page=None, order=None, fields=None, **filter):
-        # todo: docs
+        """
+        It takes a bunch of arguments, and returns a list of authors
+
+        Args:
+          limit (int): The number of results to return.
+          page (int): The page number to return.
+          order (str): The order in which to sort the results.
+          fields (list): A list of fields to return.
+          **filter: key-value pairs to filter data on
+
+        Returns:
+          A list of posts
+        """
         args = self._create_args(locals())
 
         return self.getAuthorsByFilter(args)
@@ -1101,8 +1113,8 @@ class GhostAdmin:
             list
         """
 
+        # return self.interact("get", "admin/themes", api_version="canary").json()
         raise NotImplementedError("GET themes is not supported by ghost yet.")
-        return self.interact("get", "admin/themes", api_version="canary").json()
 
     def createThemeZip(self, folder):
         """
@@ -1291,7 +1303,7 @@ class GhostAdmin:
           limit (int): The number of results to return.
           page (int): The page number to return.
           order (str): The order in which to sort the results.
-          filter (dict): key-value pairs to filter data on
+          **filter: key-value pairs to filter data on
 
         Returns:
           A list of tags.
