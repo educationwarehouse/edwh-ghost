@@ -1,1 +1,2 @@
-from .ghost import GhostAdmin
+from .client import GhostAdmin
+from .exceptions import *

@@ -1,5 +1,6 @@
 # n.a.v. https://xbopp.com/ghost-api-python-3-x-4/
 import json
+from json import JSONDecodeError
 from pathlib import Path
 
 import jwt
@@ -13,6 +14,8 @@ from io import BytesIO
 
 from attr import define, field
 from typing import BinaryIO, Iterable
+
+from .exceptions import GhostJSONException, GhostUnknownException, GhostResponseException
 
 MAX_ERROR_LIMIT = 3
 
@@ -181,11 +184,38 @@ class GhostAdmin:
 
         raise IOError("Could not contact API correctly after 3 tries.")
 
+    def _handle_errors(self, response):
+        """
+        If the response is a JSON object, and it has an "errors" key, then raise an exception with the error message
+
+        Args:
+          response (requests.Response): The response object returned by the requests library.
+        """
+        try:
+            data = response.json()
+            err = data.get("errors")
+            if not err:
+                raise GhostUnknownException("Unknown Error Occurred", data)
+
+            main_error = err[0]
+            raise GhostResponseException(str(response.status_code),
+                                         main_error['type'],
+                                         main_error['message'],
+                                         exception=err)
+
+        except JSONDecodeError as e:
+            raise GhostJSONException("JSON Parsing Failed", exception=e)
+
     def get(self, url, params=None):
         """
         Pass to self.interact with GET
         """
-        return self.interact("get", url, params=params)
+        resp = self.interact("get", url, params=params)
+
+        if not resp.ok:
+            self._handle_errors(resp)
+
+        return resp
 
     def post(self, url, params=None, json=None, files=None):
         """
@@ -264,7 +294,7 @@ class GhostAdmin:
         if not result.ok:
             return {}
 
-        members = result.json().get("members", [])
+        members = result.json().GET("members", [])
         for i in members:
             if i["name"] is None:
                 i["name"] = ""
@@ -740,7 +770,7 @@ class GhostAdmin:
             slug (string): the slug of the post
 
         Returns:
-            string: if the creation was successful or not
+            dict: with `status`: if the creation was successful or not, `result`: response from the server
         """
         return self._create(
             "posts",
@@ -802,6 +832,25 @@ class GhostAdmin:
             string: success/error status
         """
         return self._deleteById("posts", id)
+
+    def deleteAllPosts(self):
+        resp = []
+        for post in self.getAllPosts():
+            resp.append(
+                (post['id'], self.deletePostById(post['id']))
+            )
+        return resp
+
+    def deletePostsByFilter(self, **filter):
+        resp = []
+        for post in self.getPostsByFilter(filter):
+
+            print(post['id'])
+
+            # resp.append(
+            #     (post['id'], self.deletePostById(post['id']))
+            # )
+        return resp
 
     # admin/pages
 
@@ -915,7 +964,7 @@ class GhostAdmin:
             slug (string): the page's URL slug
 
         Returns:
-            result (string): if the creation was successful or not
+            dict: with `status`: if the creation was successful or not, `result`: response from the server
         """
 
         return self._create(
