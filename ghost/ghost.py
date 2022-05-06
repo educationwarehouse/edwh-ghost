@@ -18,6 +18,17 @@ MAX_ERROR_LIMIT = 3
 
 
 def is_iterable(value):
+    """
+    "If the value is iterable and not a string, return True."
+
+    The first part of the function checks if the value is iterable. The second part checks if the value is not a string
+
+    Args:
+      value: The value to check.
+
+    Returns:
+      A boolean value.
+    """
     return isinstance(value, Iterable) and not isinstance(value, str)
 
 
@@ -147,12 +158,12 @@ class GhostAdmin:
                 raise ValueError(f"Unknown verb: {verb}")
             if resp.status_code == 401 and not error_count:
                 # retry instantly with new headers
-                self.createHeaders()
+                self.headers = self.createHeaders()
                 error_count += 1
             elif resp.status_code == 401 and error_count:
                 # after the first error, try again after a timeout
                 time.sleep(5)
-                self.createHeaders()
+                self.headers = self.createHeaders()
                 error_count += 1
             else:
                 # on other error codes, print and return
@@ -351,8 +362,6 @@ class GhostAdmin:
             list: list of relevant objects
         """
 
-        # todo: make parameters keyword args for ease of use
-
         filter["formats"] = "html,mobiledoc"
         result = self.get(f"{api}/{type}", params=filter)
         if result.ok:
@@ -369,16 +378,37 @@ class GhostAdmin:
         return posts
 
     def _list_join(self, value, paren='square'):
+        """
+        It takes a list of strings, joins them with commas, and then wraps them in square or round brackets
+
+        Args:
+          value (Iterable): the list of values to join
+          paren (string|False): the type of parenthesis to use. Defaults to square
+
+        Returns:
+          A joined string of values
+        """
         value = ','.join(value)
-        if paren == 'square':
+        if not paren:
+            return value
+        elif paren == 'square':
             return f'[{value}]'
         elif paren == 'round':
             return f'({value})'
         else:
             # todo: other?
-            return value
+            raise NotImplementedError(f"Parentheses type '{paren}' not supported.")
 
     def _filters_to_ghost(self, filters):
+        """
+        It takes a dictionary of filters and returns a string of filters in the format that Ghost expects
+
+        Args:
+          filters (dict): A dictionary of filters to apply to the search.
+
+        Returns:
+          A string of filters
+        """
         ghost_filters = []
 
         for key, value in filters.items():
@@ -392,6 +422,17 @@ class GhostAdmin:
         return '+'.join(ghost_filters)
 
     def _create_args(self, d):
+        """
+        It takes a dictionary of arguments, and returns a dictionary of arguments
+
+        Args:
+          d: the dictionary of parameters
+
+        Returns:
+          A dictionary of the arguments that are being passed to the query.
+        """
+
+        # todo: use Operators (greater than etc), combinations (+ for AND), etc.
         d.pop('self')
 
         args = {}
@@ -653,7 +694,19 @@ class GhostAdmin:
         return [post for post in all_posts if post[property] == title]
 
     def posts(self, *, limit=None, page=None, order=None, fields=None, **filter):
-        # todo: docs
+        """
+        It takes a bunch of arguments, and returns a list of posts
+
+        Args:
+          limit (int): The number of results to return.
+          page (int): The page number to return.
+          order (str): The order in which to sort the results.
+          fields (list): A list of fields to return.
+          filter (dict): key-value pairs to filter data on
+
+        Returns:
+          A list of posts
+        """
         args = self._create_args(locals())
 
         return self.getPostsByFilter(args)
@@ -816,7 +869,19 @@ class GhostAdmin:
         return self._getByFilter(filter, "pages")
 
     def pages(self, *, limit=None, page=None, order=None, fields=None, **filter):
-        # todo: docs
+        """
+        It takes a bunch of arguments, and returns a list of pages
+
+        Args:
+          limit (int): The number of results to return.
+          page (int): The page number to return.
+          order (str): The order in which to sort the results.
+          fields (list): A list of fields to return.
+          filter (dict): key-value pairs to filter data on
+
+        Returns:
+          A list of pages
+        """
         args = self._create_args(locals())
 
         return self.getPagesByFilter(args)
@@ -1218,7 +1283,20 @@ class GhostAdmin:
         return self._getByFilter(filter, "tags", "content")
 
     def tags(self, *, limit=None, page=None, order=None, **filter):
-        # todo: docs
+        """
+        This function returns a list of tags, with optional filtering and pagination.
+        Note: all arguments are keyword-only.
+
+        Args:
+          limit (int): The number of results to return.
+          page (int): The page number to return.
+          order (str): The order in which to sort the results.
+          filter (dict): key-value pairs to filter data on
+
+        Returns:
+          A list of tags.
+        """
+
         args = self._create_args(locals())
 
         return self.getTagsByFilter(args)
@@ -1290,5 +1368,4 @@ def demo():
 
 
 if __name__ == "__main__":
-    # demo()
-    test()
+    demo()
