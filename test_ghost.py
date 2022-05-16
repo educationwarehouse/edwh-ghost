@@ -149,7 +149,7 @@ def test_1_posts(ghost, faker):
 
 # @disable
 def test_2_pages(ghost, faker):
-    pages: PostResource = ghost.pages
+    pages: PageResource = ghost.pages
 
     # GET /admin/pages/
     assert not pages()
