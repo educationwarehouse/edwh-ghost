@@ -4,3 +4,7 @@ build
 *.egg-info
 *.pyc
 __pycache__
+.syspath.txt
+.xml
+.env
+.coverage

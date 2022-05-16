@@ -1,0 +1,6 @@
+black==22.3.0
+pytest
+coverage
+Faker
+python-dotenv
+pip-tools

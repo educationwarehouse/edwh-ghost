@@ -3,6 +3,14 @@ from setuptools import setup
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+# pip-compile requirements.in -> requirements.txt
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
+# pip-compile requirements-dev.in -> requirements-dev.txt
+with open('requirements-dev.txt') as f:
+    dev_required = f.read().splitlines()
+
 setup(
     name="edwh-ghost",
     version="0.1.0",
@@ -15,6 +23,6 @@ setup(
     license="MIT",
     packages=["ghost"],
     zip_safe=False,
-    install_requires=["attrs==21.4.0", "PyJWT==2.3.0", "requests==2.27.1"],
-    extras_require={"dev": ["black==22.3.0"]},
+    install_requires=required,
+    extras_require={"dev": dev_required},
 )
