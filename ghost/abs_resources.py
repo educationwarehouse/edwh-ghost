@@ -470,7 +470,7 @@ class GhostAdminResource(GhostResource, ABC):
         except GhostResourceNotFoundException:
             return []
 
-    def update(self, id: str = None, data: dict = None, old = None, /, **filters):
+    def update(self, id: str = None, data: dict = None, old=None, /, **filters):
         """
         Update either one item if 'id' is supplied or all items matching filters.
 

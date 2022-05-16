@@ -70,7 +70,7 @@ class ImageResource(GhostResource):
         with open(path, "rb") as image:
             return BytesIO(image.read())
 
-    def upload(self, image_obj_or_path, image_name: str=None):
+    def upload(self, image_obj_or_path, image_name: str = None):
         """
         Args:
             image_obj_or_path (BytesIO | str): either a path to the image or its bytes

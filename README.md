@@ -34,7 +34,7 @@ from ghost.resources import *
 posts: PostResource = ga.posts
 
 # READ
-multiple = posts(limit=5)
+multiple = posts(limit=5) # Ghost Result Set
 # alias for
 posts.get(limit=5)  # Ghost Result Set
 
@@ -42,28 +42,33 @@ some_post = posts.get("some_id")  # Ghost Result
 
 for post in posts.paginate():
     # iterate without limit
-    print(post)
+    print(post) # Ghost Result
 
-some_post.update({...})
+# UPDATE
+some_post.update({...}) # response dict  
 # alias:
-posts.update("some_id", {...})
+posts.update("some_id", {...}) # response dict  
 # bulk:
-multiple.update({...})
+multiple.update({...}) # response dict 
 
-some_post.delete()
+
+# DELETE
+some_post.delete() # bool of success
 # alias:
-posts.delete("some_id")
+posts.delete("some_id") # bool of success
 # bulk:
-multiple.delete()
+multiple.delete() # list of bools of success
 
-posts.create(title="...", etc="...") # create one
+# CREATE
+# one:
+posts.create(title="...", etc="...") # response dict
 # bulk:
-posts.create({...}, {...}) # create multiple
+posts.create({...}, {...}) # list of response dicts
 
 # some resources are read only:
 authors: AuthorResource = ga.authors
 
 authors()  # Ghost Result Set
 
-authors.delete()  # gives an error
+authors.delete()  # error
 ```

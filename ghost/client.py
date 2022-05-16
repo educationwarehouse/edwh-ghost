@@ -133,13 +133,13 @@ class GhostClient(abc.ABC):
         raise NotImplementedError("Implement this in the GhostAdmin class")
 
     def _interact(
-            self,
-            verb: str,
-            endpoint: str,
-            params: dict = None,
-            files: dict = None,
-            json: dict = None,
-            api_version: str = None,
+        self,
+        verb: str,
+        endpoint: str,
+        params: dict = None,
+        files: dict = None,
+        json: dict = None,
+        api_version: str = None,
     ):
         """
         Wrapper for requests that deals with Ghost API specifics and handles the response.
