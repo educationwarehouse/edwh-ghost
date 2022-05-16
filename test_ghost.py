@@ -379,7 +379,7 @@ def test_10_ghost_content():
     ghost = ghost_content()
 
     posts = ghost.posts()
-    post_id = posts[0]['id']
+    post_id = posts[0]["id"]
 
     with pytest.raises(GhostWrongApiError):
         ghost.posts.delete(post_id)
@@ -388,24 +388,16 @@ def test_10_ghost_content():
         ghost.post.delete(post_id)
 
     with pytest.raises(GhostWrongApiError):
-        ghost.posts.update(post_id, {
-            'title': "Illegal"
-        })
+        ghost.posts.update(post_id, {"title": "Illegal"})
 
     with pytest.raises(GhostWrongApiError):
-        ghost.post.update(post_id, {
-            'title': "Illegal"
-        })
+        ghost.post.update(post_id, {"title": "Illegal"})
 
     with pytest.raises(GhostWrongApiError):
-        ghost.posts.create({
-            'title': "Illegal"
-        })
+        ghost.posts.create({"title": "Illegal"})
 
     with pytest.raises(GhostWrongApiError):
-        ghost.post.create({
-            'title': "Illegal"
-        })
+        ghost.post.create({"title": "Illegal"})
 
 
 # @disable

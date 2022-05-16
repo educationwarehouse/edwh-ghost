@@ -5,7 +5,7 @@ class BaseGhostException(Exception):
     # Base, inherit this cls
 
     def __init__(
-            self, status_code, error_type=None, error_message="", *a, exception=None
+        self, status_code, error_type=None, error_message="", *a, exception=None
     ):
         super().__init__(
             str(status_code), error_type, error_message, *a

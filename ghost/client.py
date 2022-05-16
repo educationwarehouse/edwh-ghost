@@ -1,28 +1,15 @@
 import abc
 from dataclasses import field, dataclass
 from json import JSONDecodeError
-from pprint import pprint
 
 import jwt
 import requests
 import time
-import sys
 
 from datetime import datetime as dt
 
-from .abs_resources import GhostAdminResource
 from .exceptions import *
-from .resources import (
-    PostResource,
-    PageResource,
-    AuthorResource,
-    TagResource,
-    ImageResource,
-    ThemeResource,
-    SiteResource,
-    SettingsResource,
-    MemberResource,
-)
+from .resources import *
 
 MAX_ERROR_LIMIT = 3
 
@@ -51,16 +38,27 @@ class GhostClient(abc.ABC):
 
         token = self._create_token(api_version)
         if token:
-            headers['Authorization'] = f"Ghost {token}"
+            headers["Authorization"] = f"Ghost {token}"
 
         return headers
 
     def _check_keys(self):
-        raise NotImplementedError("Implement _check_keys when inheriting from this class.")
+        raise NotImplementedError(
+            "Implement _check_keys when inheriting from this class."
+        )
 
-    def _create_token(self, api_version=None):
+    def _create_token(self, api_version: str = None):
+        """
+        Create a JWT token if an admin API key was supplied.
+
+        Args:
+            api_version (str): override the client's api version
+
+        Returns:
+            str: auth token for ghost
+        """
         if not self._check_keys():
-            raise ValueError("Please enter a valid admin and content api key!")
+            raise ValueError("Please enter valid auth keys!")
 
         if self.adminAPIKey:
             if api_version is None:
@@ -80,13 +78,17 @@ class GhostClient(abc.ABC):
             )
 
     def resource(self, name, single=False):
-        class _Resource(GhostAdminResource):
-            # Temporary Resource
-            resource = name
+        """
+        Create an anonymous resource on the fly - to be used if there is no class available for some resource,
+        that does have an endpoint in ghost.
+        """
+        raise NotImplementedError("Implement these in the inherited classes.")
 
-        return _Resource(self, single=single)
-
-    def _handle_errors(self, response):
+    def _handle_errors(self, response: requests.Response):
+        """
+        Raise custom ghost exceptions on different types of errors,
+        instead of just returning the response JSON
+        """
         try:
             data = response.json()
             err = data.get("errors")
@@ -122,17 +124,39 @@ class GhostClient(abc.ABC):
         return resp.json()
 
     def DELETE(self, *_, **__):
-        raise GhostWrongApiError("DELETE is not allowed for the content API!")
+        raise NotImplementedError("Implement this in the GhostAdmin class")
 
     def PUT(self, *_, **__):
-        raise GhostWrongApiError("PUT is not allowed for the content API!")
+        raise NotImplementedError("Implement this in the GhostAdmin class")
 
     def POST(self, *_, **__):
-        raise GhostWrongApiError("POST is not allowed for the content API!")
+        raise NotImplementedError("Implement this in the GhostAdmin class")
 
     def _interact(
-            self, verb, endpoint, params=None, files=None, json=None, api_version=None
+            self,
+            verb: str,
+            endpoint: str,
+            params: dict = None,
+            files: dict = None,
+            json: dict = None,
+            api_version: str = None,
     ):
+        """
+        Wrapper for requests that deals with Ghost API specifics and handles the response.
+
+        Args:
+          verb (str): The HTTP verb to use.
+          endpoint: The endpoint you want to access.
+            For example, if you want to access the posts endpoint, you would pass in "posts".
+          params (dict): A dictionary of query parameters to be appended to the URL.
+          files (dict): a dictionary of files to upload.
+            E.g. {"file": (name, file, mime_type)}
+          json (dict): The JSON data to send in the body of the request.
+          api_version (str): The version of the API you want to use.
+
+        Returns:
+          requests.Response: A response object.
+        """
         if endpoint.startswith("content") or not self.adminAPIKey:
             endpoint += "?key=" + self.contentAPIKey
 
@@ -196,14 +220,17 @@ class GhostClient(abc.ABC):
 @dataclass
 class GhostContent(GhostClient):
     def _check_keys(self):
+        """
+        This Client only requires a Content Key
+        """
         return self.contentAPIKey
 
     def __post_init__(self):
         """
-        Setup the JWT Authentication headers
+        Setup the different Resources
         """
 
-        self.headers = self._create_headers()
+        self.headers = {}
 
         # resources:
         self.posts = PostResource(self, content=True)
@@ -226,6 +253,27 @@ class GhostContent(GhostClient):
         self.site = SiteResource(self, single=True, content=True)
         self.settings = SettingsResource(self, single=True, content=True)
 
+    def DELETE(self, *_, **__):
+        raise GhostWrongApiError("DELETE is not allowed for the content API!")
+
+    def PUT(self, *_, **__):
+        raise GhostWrongApiError("PUT is not allowed for the content API!")
+
+    def POST(self, *_, **__):
+        raise GhostWrongApiError("POST is not allowed for the content API!")
+
+    def resource(self, name, single=False):
+        """
+        Create an anonymous resource on the fly - to be used if there is no class available for some resource,
+        that does have an endpoint in ghost.
+        """
+
+        class _Resource(GhostContentResource):
+            # Temporary Resource
+            resource = name
+
+        return _Resource(self, single=single)
+
 
 @dataclass
 class GhostAdmin(GhostClient):
@@ -238,11 +286,14 @@ class GhostAdmin(GhostClient):
     _session = requests.Session()
 
     def _check_keys(self):
+        """
+        The admin API requires both an admin api key and a content api key
+        """
         return self.adminAPIKey and self.contentAPIKey
 
     def __post_init__(self):
         """
-        Setup the JWT Authentication headers
+        Setup the JWT Authentication headers and the different Resources
         """
 
         self.headers = self._create_headers()
@@ -271,6 +322,9 @@ class GhostAdmin(GhostClient):
     def POST(self, url, params=None, json=None, files=None):
         """
         Pass to self.interact with POST
+
+        Returns:
+            dict: response data
         """
         resp = self._interact("post", url, params=params, json=json, files=files)
 
@@ -282,6 +336,9 @@ class GhostAdmin(GhostClient):
     def PUT(self, url, params=None, json=None, files=None):
         """
         Pass to self.interact with PUT
+
+        Returns:
+            dict: response data
         """
         resp = self._interact("put", url, params=params, json=json)
 
@@ -293,7 +350,20 @@ class GhostAdmin(GhostClient):
     def DELETE(self, url, params=None):
         """
         Pass to self.interact with DELETE
+
+        Returns:
+            bool: if the status code is right
         """
         return self._interact("delete", url, params=params).status_code == 204
 
-# todo: ghost content client that doesn't use adminAPI key, only content API key and only READ
+    def resource(self, name, single=False):
+        """
+        Create an anonymous resource on the fly - to be used if there is no class available for some resource,
+        that does have an endpoint in ghost.
+        """
+
+        class _Resource(GhostAdminResource):
+            # Temporary Resource
+            resource = name
+
+        return _Resource(self, single=single)

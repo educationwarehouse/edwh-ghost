@@ -4,11 +4,11 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # pip-compile requirements.in -> requirements.txt
-with open('requirements.txt') as f:
+with open("requirements.txt") as f:
     required = f.read().splitlines()
 
 # pip-compile requirements-dev.in -> requirements-dev.txt
-with open('requirements-dev.txt') as f:
+with open("requirements-dev.txt") as f:
     dev_required = f.read().splitlines()
 
 setup(
