@@ -1,8 +1,6 @@
 import abc
 import json
-from pprint import pprint
 from typing import Iterable
-from datetime import datetime
 
 from .exceptions import GhostResourceNotFoundException
 from .results import GhostResult, GhostResultSet
@@ -25,6 +23,7 @@ def is_iterable(value):
 
 class GhostResource(abc.ABC):
     single: bool
+    content: bool
 
     def __repr__(self):
         return f"<GhostResource {self.resource}>"
@@ -37,9 +36,10 @@ class GhostResource(abc.ABC):
     def api(self):
         raise NotImplementedError("Please choose an api")
 
-    def __init__(self, ghost_admin, single=False):
+    def __init__(self, ghost_admin, single=False, content=False):
         self.ga = ghost_admin
-        self.single = single  # fixme: remove
+        self.single = single
+        self.content = content
 
     def __call__(self, id=None, /, **filters):
         return self.get(id, **filters)
@@ -68,7 +68,8 @@ class GhostResource(abc.ABC):
         return "+".join(ghost_filters)
 
     def _create_url(self, path):
-        return "/".join([self.api, self.resource, *path])
+        api = 'content' if self.content else self.api
+        return "/".join([api, self.resource, *path])
 
     def GET(self, *path, **args):
         url = self._create_url(path)
@@ -103,7 +104,7 @@ class GhostResource(abc.ABC):
 
         return args
 
-    def _get(self, path="", params=None):
+    def _get(self, path="", params=None, single=None):
         if params is None:
             params = {}
 
@@ -113,7 +114,7 @@ class GhostResource(abc.ABC):
         if not data and self.single:
             raise GhostResourceNotFoundException(200, "Resource Not Found", path)
 
-        if self.single:
+        if self.single or single:
             return GhostResult(data[0] if isinstance(data, list) else data, self)
         else:
             return GhostResultSet(data, self, meta=resp["meta"])
@@ -135,7 +136,7 @@ class GhostResource(abc.ABC):
 
     def _get_by_id(self, id, **_params):
         params = {"formats": "html,mobiledoc", **_params}
-        return self._get(id, params)
+        return self._get(id, params, single=True)
 
     def _get_by_filters(self, limit=None, page=None, order=None, fields=None, **filter):
         args = self._create_args(locals())
@@ -259,8 +260,6 @@ class GhostAdminResource(GhostResource):
 
         if old is None:
             old = self._get_by_id(id, fields=["updated_at"])
-            if not self.single:
-                old = old[0]
 
         data["updated_at"] = old.updated_at
 

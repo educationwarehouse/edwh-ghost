@@ -10,6 +10,7 @@ from dotenv import dotenv_values
 from faker import Faker
 
 from ghost import GhostAdmin
+from ghost.client import GhostContent
 from ghost.exceptions import *
 from ghost.resources import (
     GhostAdminResource,
@@ -36,24 +37,38 @@ def ghost():
     )
 
 
+def ghost_content():
+    config = dotenv_values(".env")
+
+    return GhostContent(
+        config["GHOST_SITE"],
+        contentAPIKey=config["GHOST_CONTENT_KEY"],
+        api_version="v4",  # works like a train
+    )
+
+
 @pytest.fixture
 def faker():
     return Faker()
+
+
+# decorator to skip a test
+def disable(_):
+    return None
 
 
 def _delete_all(ghost):
     assert all(ghost.posts.delete())
     assert all(ghost.pages.delete())
     assert all(ghost.tags.delete())
-    # assert not any(ghost.authors.delete())
+    with pytest.raises(AttributeError):
+        # authors should not have a .delete()
+        # as it is a Content API
+        assert not any(ghost.authors.delete())
 
 
 def test_0_delete_old(ghost):
     _delete_all(ghost)
-
-
-def disable(_):
-    return None
 
 
 # @disable
@@ -360,6 +375,39 @@ def test_9_members(ghost, faker):
     assert not members()
 
 
+def test_10_ghost_content():
+    ghost = ghost_content()
+
+    posts = ghost.posts()
+    post_id = posts[0]['id']
+
+    with pytest.raises(GhostWrongApiError):
+        ghost.posts.delete(post_id)
+
+    with pytest.raises(GhostWrongApiError):
+        ghost.post.delete(post_id)
+
+    with pytest.raises(GhostWrongApiError):
+        ghost.posts.update(post_id, {
+            'title': "Illegal"
+        })
+
+    with pytest.raises(GhostWrongApiError):
+        ghost.post.update(post_id, {
+            'title': "Illegal"
+        })
+
+    with pytest.raises(GhostWrongApiError):
+        ghost.posts.create({
+            'title': "Illegal"
+        })
+
+    with pytest.raises(GhostWrongApiError):
+        ghost.post.create({
+            'title': "Illegal"
+        })
+
+
 # @disable
-def test_10_delete_new(ghost):
+def test_100_delete_new(ghost):
     _delete_all(ghost)
