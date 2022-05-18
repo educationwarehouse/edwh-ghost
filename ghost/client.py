@@ -24,6 +24,20 @@ class GhostClient(abc.ABC):
 
     _session = requests.Session()
 
+    def _setup_resources_on_self(self, resources, content=False):
+        """
+        Arguments:
+            resources (list[type])
+            content (bool)
+        """
+        for resource in resources:
+
+            singular = resource.__name__.lower().split('resource')[0]
+
+            setattr(self, singular, resource(self, content=content, single=True))
+            plural = f"{singular}s"
+            setattr(self, plural, resource(self, content=content))
+
     def _create_headers(self, api_version=None):
         """
         Create the ghost authentication header
@@ -133,13 +147,13 @@ class GhostClient(abc.ABC):
         raise NotImplementedError("Implement this in the GhostAdmin class")
 
     def _interact(
-        self,
-        verb: str,
-        endpoint: str,
-        params: dict = None,
-        files: dict = None,
-        json: dict = None,
-        api_version: str = None,
+            self,
+            verb: str,
+            endpoint: str,
+            params: dict = None,
+            files: dict = None,
+            json: dict = None,
+            api_version: str = None,
     ):
         """
         Wrapper for requests that deals with Ghost API specifics and handles the response.
@@ -233,21 +247,16 @@ class GhostContent(GhostClient):
         self.headers = {}
 
         # resources:
-        self.posts = PostResource(self, content=True)
-        self.pages = PageResource(self, content=True)
-        self.authors = AuthorResource(self, content=True)
-        self.tags = TagResource(self, content=True)
-        self.images = ImageResource(self, content=True)
-        self.themes = ThemeResource(self, content=True)
-        self.members = MemberResource(self, content=True)
-
-        self.post = PostResource(self, single=True, content=True)
-        self.page = PageResource(self, single=True, content=True)
-        self.author = AuthorResource(self, single=True, content=True)
-        self.tag = TagResource(self, single=True, content=True)
-        self.image = ImageResource(self, single=True, content=True)
-        self.theme = ThemeResource(self, single=True, content=True)
-        self.member = MemberResource(self, single=True, content=True)
+        self._setup_resources_on_self([
+            PostResource,
+            PageResource,
+            AuthorResource,
+            TagResource,
+            ImageResource,
+            ThemeResource,
+            MemberResource,
+            UserResource
+        ], content=True)
 
         # there's only one site/one settings:
         self.site = SiteResource(self, single=True, content=True)
@@ -299,21 +308,17 @@ class GhostAdmin(GhostClient):
         self.headers = self._create_headers()
 
         # resources:
-        self.posts = PostResource(self)
-        self.pages = PageResource(self)
-        self.authors = AuthorResource(self)
-        self.tags = TagResource(self)
-        self.images = ImageResource(self)
-        self.themes = ThemeResource(self)
-        self.members = MemberResource(self)
-
-        self.post = PostResource(self, single=True)
-        self.page = PageResource(self, single=True)
-        self.author = AuthorResource(self, single=True)
-        self.tag = TagResource(self, single=True)
-        self.image = ImageResource(self, single=True)
-        self.theme = ThemeResource(self, single=True)
-        self.member = MemberResource(self, single=True)
+        # resources:
+        self._setup_resources_on_self([
+            PostResource,
+            PageResource,
+            AuthorResource,
+            TagResource,
+            ImageResource,
+            ThemeResource,
+            MemberResource,
+            UserResource
+        ], content=False)
 
         # there's only one site/one settings:
         self.site = SiteResource(self, single=True)

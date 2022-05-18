@@ -61,16 +61,18 @@ class GhostResult:
         Delete this response's item
         """
         rs = self._resource
-        if is_admin_resource(rs):
-            return rs.delete(self.id)
+        if not is_admin_resource(rs):
+            raise PermissionError("Please use the admin API to delete resources.")
+        return rs.delete(self.id)
 
     def update(self, **data):
         """
         Update this response's item
         """
         rs = self._resource
-        if is_admin_resource(rs):
-            return rs.update(self.id, data, self)
+        if not is_admin_resource(rs):
+            raise PermissionError("Please use the admin API to update resources.")
+        return rs.update(self.id, data, self)
 
     def __eq__(self, other):
         """

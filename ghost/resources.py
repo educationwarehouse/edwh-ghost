@@ -16,10 +16,84 @@ class PostResource(GhostAdminResource):
     # See: https://ghost.org/docs/admin-api/#the-post-object
     resource = "posts"
 
+    # slug,
+    # id,
+    # uuid,
+    # title,
+    # mobiledoc,
+    # html,
+    # comment_id,
+    # feature_image,
+    # feature_image_alt,
+    # feature_image_caption,
+    # featured,
+    # status = "dr,
+    # visibility = "pub,
+    # created_at,
+    # updated_at,
+    # published_at,
+    # custom_excerpt,
+    # codeinjection_head,
+    # codeinjection_foot,
+    # custom_template,
+    # canonical_url,
+    # tags,
+    # authors,
+    # primary_author,
+    # primary_tag,
+    # url,
+    # excerpt,
+    # og_image,
+    # og_title,
+    # og_description,
+    # twitter_image,
+    # twitter_title,
+    # twitter_description,
+    # meta_title,
+    # meta_description,
+    # email_only,
+
 
 class PageResource(GhostAdminResource):
     # See: https://ghost.org/docs/admin-api/#the-post-object
     resource = "pages"
+
+    # slug,
+    # id,
+    # uuid,
+    # title,
+    # mobiledoc,
+    # html,
+    # comment_id,
+    # feature_image,
+    # feature_image_alt,
+    # feature_image_caption,
+    # featured,
+    # status = "dr,
+    # visibility = "pub,
+    # created_at,
+    # updated_at,
+    # published_at,
+    # custom_excerpt,
+    # codeinjection_head,
+    # codeinjection_foot,
+    # custom_template,
+    # canonical_url,
+    # tags,
+    # authors,
+    # primary_author,
+    # primary_tag,
+    # url,
+    # excerpt,
+    # og_image,
+    # og_title,
+    # og_description,
+    # twitter_image,
+    # twitter_title,
+    # twitter_description,
+    # meta_title,
+    # meta_description,
+    # email_only,
 
 
 class TagResource(GhostAdminResource):
@@ -30,6 +104,8 @@ class TagResource(GhostAdminResource):
 class MemberResource(GhostAdminResource):
     resource = "members"
 
+class UserResource(GhostAdminResource):
+    resource = 'users'
 
 # Content
 
