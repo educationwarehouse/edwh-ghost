@@ -6,28 +6,24 @@ import pytest
 import tempfile
 import requests
 
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 from faker import Faker
 
 from ghost import GhostAdmin
 from ghost.client import GhostContent
 from ghost.exceptions import *
-from ghost.resources import (
-    GhostAdminResource,
-    PostResource,
-    TagResource,
-    AuthorResource,
-    PageResource,
-    ImageResource,
-    ThemeResource,
-    MemberResource,
-)
+from ghost.resources import *
 from ghost.results import GhostResult, GhostResultSet
+
+
+def load_config():
+    load_dotenv()
+    return dict(os.environ)
 
 
 @pytest.fixture
 def ghost():
-    config = dotenv_values(".env")
+    config = load_config()
 
     return GhostAdmin(
         config["GHOST_SITE"],
@@ -38,7 +34,7 @@ def ghost():
 
 
 def ghost_content():
-    config = dotenv_values(".env")
+    config = load_config()
 
     return GhostContent(
         config["GHOST_SITE"],

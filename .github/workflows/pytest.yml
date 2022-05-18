@@ -12,10 +12,6 @@ jobs:
           - 3.9
           - '3.10'
     runs-on: ubuntu-latest
-    env:
-      GHOST_SITE: ${{ secrets.GHOST_SITE }}
-      GHOST_ADMIN_KEY: ${{ secrets.GHOST_ADMIN_KEY }}
-      GHOST_CONTENT_KEY: ${{ secrets.GHOST_CONTENT_KEY }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -24,6 +20,10 @@ jobs:
       - run: pip install -r requirements.txt
       - run: pip install -r requirements-dev.txt
       - uses: lpenz/ghaction-pytest-cov@v1
+        env:
+          GHOST_SITE: ${{ secrets.GHOST_SITE }}
+          GHOST_ADMIN_KEY: ${{ secrets.GHOST_ADMIN_KEY }}
+          GHOST_CONTENT_KEY: ${{ secrets.GHOST_CONTENT_KEY }}
       - uses: AndreMiras/coveralls-python-action@v20201129
         with:
           parallel: true
