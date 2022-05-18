@@ -18,6 +18,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: lpenz/ghaction-pytest-cov@v1
+      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-dev.txt
       - uses: AndreMiras/coveralls-python-action@v20201129
         with:
           parallel: true
