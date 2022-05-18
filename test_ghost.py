@@ -78,10 +78,6 @@ def test_1_posts(ghost, faker):
         slug="first",
     )
 
-    author_first = faker.first_name()
-    author_last = faker.last_name()
-    author_full = f"{author_first} {author_last}"
-
     content = faker.sentences(nb=5)
 
     _third = {
@@ -95,7 +91,6 @@ def test_1_posts(ghost, faker):
         "html": "".join([f"<p>{_}</p>" for _ in content]),
         "excerpt": content[0],
         "featured": False,
-        "feature_image": "content/images/2020/09/featureImage1.jpg",
     }
 
     # POST /admin/posts/
@@ -143,6 +138,14 @@ def test_1_posts(ghost, faker):
     assert not posts(limit=1)
 
     # re-create POST 3 to be used for authors:
+
+    temp = tempfile.TemporaryFile().name
+    img_path = f"{temp}.png"
+    _download_random_image(img_path)
+
+    url = ghost.images.upload(img_path, "third.png")
+    _third["feature_image"] = url
+
     posts.create(_third)
 
     # posts.create(
