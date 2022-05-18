@@ -1,10 +1,11 @@
+from __future__ import annotations
 import hashlib
 import json
 
 # noinspection PyUnreachableCode
 if False:
     # annotation only
-    from .abs_resources import GhostResource, GhostAdminResource
+    from .abs_resources import GhostResource
 
 
 def dict_hash(dictionary: dict):
@@ -17,6 +18,12 @@ def dict_hash(dictionary: dict):
     encoded = json.dumps(dictionary, sort_keys=True).encode()
     dhash.update(encoded)
     return dhash.hexdigest()
+
+
+def is_admin_resource(obj):
+    # GhostAdminResource cannot be imported globally due to circular referencing
+    from .abs_resources import GhostAdminResource
+    return isinstance(obj, GhostAdminResource)
 
 
 class GhostResult:
@@ -53,7 +60,7 @@ class GhostResult:
         Delete this response's item
         """
         rs = self._resource
-        if isinstance(rs, GhostAdminResource):
+        if is_admin_resource(rs):
             return rs.delete(self.id)
 
     def update(self, **data):
@@ -61,7 +68,7 @@ class GhostResult:
         Update this response's item
         """
         rs = self._resource
-        if isinstance(rs, GhostAdminResource):
+        if is_admin_resource(rs):
             return rs.update(self.id, data, self)
 
     def __eq__(self, other):

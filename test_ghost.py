@@ -61,10 +61,10 @@ def _delete_all(ghost):
     assert all(ghost.posts.delete())
     assert all(ghost.pages.delete())
     assert all(ghost.tags.delete())
-    with pytest.raises(AttributeError):
+    with pytest.raises(NotImplementedError):
         # authors should not have a .delete()
         # as it is a Content API
-        assert not any(ghost.authors.delete())
+        ghost.authors.delete()
 
 
 def test_0_delete_old(ghost):

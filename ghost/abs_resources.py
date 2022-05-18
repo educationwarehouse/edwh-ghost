@@ -295,13 +295,13 @@ class GhostResource(abc.ABC):
             return self._get_by_filters(**filters)
 
     def delete(self, *_, **__):
-        return NotImplementedError("Implement this in the Admin Resources")
+        raise NotImplementedError("Implement this in the Admin Resources")
 
     def update(self, *_, **__):
-        return NotImplementedError("Implement this in the Admin Resources")
+        raise NotImplementedError("Implement this in the Admin Resources")
 
     def create(self, *_, **__):
-        return NotImplementedError("Implement this in the Admin Resources")
+        raise NotImplementedError("Implement this in the Admin Resources")
 
 
 class GhostAdminResource(GhostResource, ABC):

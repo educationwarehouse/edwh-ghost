@@ -8,6 +8,9 @@ from .abs_resources import GhostAdminResource, GhostContentResource, GhostResour
 
 # Admin
 
+# todo: inherit create/update/get for some Resources with all values allowed for that specific resource
+#  -> useful as documentation instead of going to the (sometimes) confusing Ghost Docs.
+
 
 class PostResource(GhostAdminResource):
     # See: https://ghost.org/docs/admin-api/#the-post-object
@@ -163,7 +166,6 @@ class ThemeResource(GhostResource):
         resp = self.PUT(name, "activate")
 
         return resp["themes"][0]["name"]
-
 
 # todo: (admin) tiers, offers, webhooks, ...?
 # todo: (content): ...?
