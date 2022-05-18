@@ -267,7 +267,8 @@ class GhostResource(abc.ABC):
 
         return self._get(params=args)
 
-    def get(self, id: str = None, /, **filters):
+    # def get(self, id: str = None, /, **filters): # <- Python 3.8+
+    def get(self, id: str = None, **filters):
         """
         Either get
 
@@ -427,7 +428,8 @@ class GhostAdminResource(GhostResource, ABC):
         except GhostResourceNotFoundException:
             return []
 
-    def delete(self, id=None, /, **filters):
+    # def delete(self, id=None, /, **filters):  # <- Python 3.8+
+    def delete(self, id=None, **filters):
         """
         Delete either one item if 'id' is supplied or all items matching filters
         """
@@ -471,7 +473,8 @@ class GhostAdminResource(GhostResource, ABC):
         except GhostResourceNotFoundException:
             return []
 
-    def update(self, id: str = None, data: dict = None, old=None, /, **filters):
+    # def update(self, id: str = None, data: dict = None, old=None, /, **filters): # <- Python 3.8+
+    def update(self, id: str = None, data: dict = None, old=None, **filters):
         """
         Update either one item if 'id' is supplied or all items matching filters.
 
