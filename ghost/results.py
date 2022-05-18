@@ -23,6 +23,7 @@ def dict_hash(dictionary: dict):
 def is_admin_resource(obj):
     # GhostAdminResource cannot be imported globally due to circular referencing
     from .abs_resources import GhostAdminResource
+
     return isinstance(obj, GhostAdminResource)
 
 

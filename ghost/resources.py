@@ -167,5 +167,6 @@ class ThemeResource(GhostResource):
 
         return resp["themes"][0]["name"]
 
+
 # todo: (admin) tiers, offers, webhooks, ...?
 # todo: (content): ...?
