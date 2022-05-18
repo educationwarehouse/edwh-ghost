@@ -271,7 +271,8 @@ def _download_random_image(path="./temp.png"):
 def test_6_images(ghost, faker):
     images: ImageResource = ghost.images
 
-    img_path = tempfile.TemporaryFile().name + ".jpg"
+    temp = tempfile.TemporaryFile().name
+    img_path = f"{temp}.jpg"
     _download_random_image(img_path)
 
     assert images.upload(img_path)
@@ -293,7 +294,9 @@ def _download_boilerplate_theme(path="./temp.zip"):
 def test_7_themes(ghost, faker):
     themes: ThemeResource = ghost.themes
 
-    fake_zip_path = tempfile.TemporaryFile().name + ".zip"
+    temp = tempfile.TemporaryFile().name
+
+    fake_zip_path = f"{temp}.zip"
     _download_random_image(fake_zip_path)
 
     try:
