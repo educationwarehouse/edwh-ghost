@@ -49,9 +49,10 @@ class GhostResource(abc.ABC):
         self.single = single
         self.content = content
 
-    def __call__(self, id: str = None, /, **filters):
+    # def __call__(self, id: str = None, /, **filters): # <- Python 3.8+
+    def __call__(self, id: str = None, **filters):
         """
-        Magic method to make it possible to call something like ghost.pages(tag='sometag')
+        Magic method to make it possible to call something like ghost.pages(tag='sometag') or ghost.page('some id')
         instead of ghots.pages.get(tag='sometag')
         """
 
