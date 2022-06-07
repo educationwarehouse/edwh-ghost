@@ -18,9 +18,9 @@ colorama==0.4.4
     # via
     #   click
     #   pytest
-coverage==6.3.3
+coverage==6.4.1
     # via -r .\requirements-dev.in
-faker==13.11.1
+faker==13.12.1
     # via -r .\requirements-dev.in
 iniconfig==1.1.1
     # via pytest
