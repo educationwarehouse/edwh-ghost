@@ -21,13 +21,20 @@ def dict_hash(dictionary: dict):
 
 
 def is_admin_resource(obj):
-    # GhostAdminResource cannot be imported globally due to circular referencing
+    """
+    GhostAdminResource cannot be imported globally due to circular referencing.
+    This method checks if an object is a Ghost Admin Resource
+    """
     from .abs_resources import GhostAdminResource
 
     return isinstance(obj, GhostAdminResource)
 
 
 class GhostResult:
+    """
+    Single resource value (e.g. one post, one tag)
+    """
+
     def __init__(self, d: dict, resource: GhostResource):
         if d.get("tags") and isinstance(d["tags"], list):
             d["tags"] = {_["slug"]: _ for _ in d["tags"]}  # list to dict
@@ -84,6 +91,10 @@ class GhostResult:
 
 
 class GhostResultSet:
+    """
+    List of resource objects (e.g. posts, tags)
+    """
+
     def __init__(self, lst: list, resource: GhostResource, meta: dict, request: dict):
         self.__list__ = [GhostResult(_, resource) for _ in lst]
         self._resource = resource

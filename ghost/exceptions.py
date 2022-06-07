@@ -2,7 +2,9 @@ import pprint
 
 
 class BaseGhostException(Exception):
-    # Base, inherit this cls
+    """
+    Base, inherit this cls
+    """
 
     def __init__(
         self, status_code, error_type=None, error_message="", *a, exception=None
@@ -21,25 +23,30 @@ class BaseGhostException(Exception):
 
 
 class GhostResponseException(BaseGhostException):
-    # -> from JSON['errors']
-    pass
+    """
+    -> from JSON['errors']
+    """
 
 
 class GhostUnknownException(BaseGhostException):
-    # -> if JSON but no errors key
-    pass
+    """
+    -> if JSON but no errors key
+    """
 
 
 class GhostJSONException(BaseGhostException):
-    # -> if JSON could not be parsed
-    pass
+    """
+    -> if JSON could not be parsed
+    """
 
 
 class GhostResourceNotFoundException(BaseGhostException):
-    # -> call correct but just no data
-    pass
+    """
+    -> call correct but just no data
+    """
 
 
 class GhostWrongApiError(BaseGhostException):
-    # -> content api used instead of admin
-    pass
+    """
+    -> content api used instead of admin
+    """
