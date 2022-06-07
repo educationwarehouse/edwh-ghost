@@ -32,7 +32,7 @@ class GhostClient(abc.ABC):
         """
         for resource in resources:
 
-            singular = resource.__name__.lower().split('resource')[0]
+            singular = resource.__name__.lower().split("resource")[0]
 
             setattr(self, singular, resource(self, content=content, single=True))
             plural = f"{singular}s"
@@ -147,13 +147,13 @@ class GhostClient(abc.ABC):
         raise NotImplementedError("Implement this in the GhostAdmin class")
 
     def _interact(
-            self,
-            verb: str,
-            endpoint: str,
-            params: dict = None,
-            files: dict = None,
-            json: dict = None,
-            api_version: str = None,
+        self,
+        verb: str,
+        endpoint: str,
+        params: dict = None,
+        files: dict = None,
+        json: dict = None,
+        api_version: str = None,
     ):
         """
         Wrapper for requests that deals with Ghost API specifics and handles the response.
@@ -247,16 +247,19 @@ class GhostContent(GhostClient):
         self.headers = {}
 
         # resources:
-        self._setup_resources_on_self([
-            PostResource,
-            PageResource,
-            AuthorResource,
-            TagResource,
-            ImageResource,
-            ThemeResource,
-            MemberResource,
-            UserResource
-        ], content=True)
+        self._setup_resources_on_self(
+            [
+                PostResource,
+                PageResource,
+                AuthorResource,
+                TagResource,
+                ImageResource,
+                ThemeResource,
+                MemberResource,
+                UserResource,
+            ],
+            content=True,
+        )
 
         # there's only one site/one settings:
         self.site = SiteResource(self, single=True, content=True)
@@ -309,16 +312,19 @@ class GhostAdmin(GhostClient):
 
         # resources:
         # resources:
-        self._setup_resources_on_self([
-            PostResource,
-            PageResource,
-            AuthorResource,
-            TagResource,
-            ImageResource,
-            ThemeResource,
-            MemberResource,
-            UserResource
-        ], content=False)
+        self._setup_resources_on_self(
+            [
+                PostResource,
+                PageResource,
+                AuthorResource,
+                TagResource,
+                ImageResource,
+                ThemeResource,
+                MemberResource,
+                UserResource,
+            ],
+            content=False,
+        )
 
         # there's only one site/one settings:
         self.site = SiteResource(self, single=True)

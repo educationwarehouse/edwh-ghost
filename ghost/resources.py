@@ -104,8 +104,10 @@ class TagResource(GhostAdminResource):
 class MemberResource(GhostAdminResource):
     resource = "members"
 
+
 class UserResource(GhostAdminResource):
-    resource = 'users'
+    resource = "users"
+
 
 # Content
 
