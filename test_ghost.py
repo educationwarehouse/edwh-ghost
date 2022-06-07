@@ -62,6 +62,10 @@ def _delete_all(ghost):
         # as it is a Content API
         ghost.authors.delete()
 
+    assert not ghost.posts()
+    assert not ghost.pages()
+    assert not ghost.tags()
+
 
 def test_0_delete_old(ghost):
     _delete_all(ghost)
@@ -243,7 +247,7 @@ def test_4_authors(ghost, faker):
     assert ghost.author(ghost_author.id) == ghost_author
 
 
-@disable
+# @disable
 def test_5_tiers(ghost, faker):
     return "Tiers API does not appear to be working right now"
 
@@ -377,6 +381,7 @@ def test_9_members(ghost, faker):
     assert not members()
 
 
+# @disable
 def test_10_ghost_content():
     ghost = ghost_content()
 
@@ -400,6 +405,66 @@ def test_10_ghost_content():
 
     with pytest.raises(GhostWrongApiError):
         ghost.post.create({"title": "Illegal"})
+
+
+# @disable
+def test_11_ghost_paginate(ghost, faker):
+    posts: PostResource = ghost.posts
+
+    posts.delete()  # clean before
+
+    # create 20 posts
+    posts.create(
+        *[
+            {
+                "title": faker.sentence(),
+                "authors": [{"slug": "ghost"}],
+                "tags": ["even" if _ % 2 else "odd"],
+            }
+            for _ in range(13)
+        ]
+    )
+
+    # default pagination
+
+    assert len(posts(limit="all")) == 13
+
+    page1 = posts(limit=5)
+
+    assert len(page1) == 5
+
+    page2 = page1.next()
+
+    assert len(page2) == 5
+
+    page3 = page2.next()
+
+    assert len(page3) == 3  # 13 posts
+
+    # filtered pagination
+
+    assert len(posts(tag="even")) == 6
+
+    page1 = posts(tag="even", limit=4)
+
+    assert len(page1) == 4
+
+    page2 = page1.next()
+
+    assert len(page2) == 2
+
+    page3 = page2.next()
+
+    assert not page3
+
+    # with .paginate and filters:
+
+    n = 0
+    for even in posts.paginate(tag="even"):
+        assert "even" in even.tags
+        n += 1
+
+    assert n == 6
 
 
 # @disable

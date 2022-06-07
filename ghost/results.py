@@ -29,6 +29,8 @@ def is_admin_resource(obj):
 
 class GhostResult:
     def __init__(self, d: dict, resource: GhostResource):
+        if d.get("tags") and isinstance(d["tags"], list):
+            d["tags"] = {_["slug"]: _ for _ in d["tags"]}  # list to dict
         self.__data__ = d
         self._resource: GhostResource = resource
 
@@ -82,9 +84,10 @@ class GhostResult:
 
 
 class GhostResultSet:
-    def __init__(self, lst, resource, meta):
+    def __init__(self, lst: list, resource: GhostResource, meta: dict, request: dict):
         self.__list__ = [GhostResult(_, resource) for _ in lst]
         self._resource = resource
+        meta["request"] = request
         self._meta = meta
 
     def __repr__(self):
@@ -124,4 +127,19 @@ class GhostResultSet:
         """
         return [i.update(**data) for i in self.__list__]
 
-    # todo: paginate .next()
+    def next(self):
+        """
+        Get the next page for a resultset
+        """
+        pag = self._meta["pagination"]
+        request = self._meta["request"]
+        params = request["params"]
+        params["limit"] = pag["limit"]
+        params["page"] = pag["next"]
+        if not params["page"]:
+            return []
+
+        # request contains path, params, single
+        # used to keep the request params the same (so pagination makes sense)
+        # except the page number (and force limit received from server to be sure)
+        return self._resource._get(**request)

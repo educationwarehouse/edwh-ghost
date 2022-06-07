@@ -198,7 +198,16 @@ class GhostResource(abc.ABC):
         if self.single or single:
             return GhostResult(data[0] if isinstance(data, list) else data, self)
         else:
-            return GhostResultSet(data, self, meta=resp["meta"])
+            return GhostResultSet(
+                data,
+                self,
+                meta=resp["meta"],
+                request={
+                    "path": path,
+                    "params": params,
+                    "single": single,
+                },
+            )
 
     def paginate(self, *, per: int = 25, **filters):
         """
@@ -420,6 +429,9 @@ class GhostAdminResource(GhostResource, ABC):
             list[bool]: success of each delete
         """
         try:
+            if not filters.get("limit"):
+                filters["limit"] = "all"
+
             ids = self._get_by_filters(**filters)
             if not ids:
                 return []
@@ -468,6 +480,9 @@ class GhostAdminResource(GhostResource, ABC):
         """
 
         try:
+            if not filters.get("limit"):
+                filters["limit"] = "all"
+
             ids = self._get_by_filters(**filters, fields=["id", "updated_at"])
             return [self._update_by_id(old["id"], data, old) for old in ids]
         except GhostResourceNotFoundException:
