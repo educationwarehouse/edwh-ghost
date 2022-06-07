@@ -9,7 +9,7 @@ import requests
 from dotenv import load_dotenv
 from faker import Faker
 
-from ghost import GhostAdmin
+from ghost import GhostAdmin, SUPPORTED_VERSIONS
 from ghost.client import GhostContent
 from ghost.exceptions import *
 from ghost.resources import *
@@ -21,25 +21,26 @@ def load_config():
     return dict(os.environ)
 
 
-@pytest.fixture
-def ghost():
+@pytest.fixture(scope="module", params=SUPPORTED_VERSIONS)
+def ghost(request):
+    version = request.param
     config = load_config()
 
     return GhostAdmin(
         config["GHOST_SITE"],
         adminAPIKey=config["GHOST_ADMIN_KEY"],
         contentAPIKey=config["GHOST_CONTENT_KEY"],
-        api_version="v4",  # works like a train
+        api_version=version,
     )
 
 
-def ghost_content():
+def ghost_content(version):
     config = load_config()
 
     return GhostContent(
         config["GHOST_SITE"],
         contentAPIKey=config["GHOST_CONTENT_KEY"],
-        api_version="v4",  # works like a train
+        api_version=version,  # works like a train
     )
 
 
@@ -247,10 +248,8 @@ def test_4_authors(ghost, faker):
     assert ghost.author(ghost_author.id) == ghost_author
 
 
-# @disable
+@disable  # Tiers API does not appear to be working right now, same for offers
 def test_5_tiers(ghost, faker):
-    return "Tiers API does not appear to be working right now"
-
     tiers: GhostAdminResource = ghost.resource("tiers")
 
     tiers.delete()
@@ -299,6 +298,10 @@ def _download_boilerplate_theme(path="./temp.zip"):
 
 # @disable
 def test_7_themes(ghost, faker):
+    if ghost.site()["version"] > "5.0":
+        # the ghost boilerplate theme is currently not compatible with ghost 5
+        return
+
     themes: ThemeResource = ghost.themes
 
     temp = tempfile.TemporaryFile().name
@@ -320,8 +323,8 @@ def test_7_themes(ghost, faker):
     _download_boilerplate_theme(zip_path)
 
     name = themes.upload(zip_path)
-    assert name
     os.remove(zip_path)
+    assert name
 
     assert themes.activate(name) == name
 
@@ -382,8 +385,9 @@ def test_9_members(ghost, faker):
 
 
 # @disable
-def test_10_ghost_content():
-    ghost = ghost_content()
+def test_10_ghost_content(ghost):
+    # use ghost only to parameterize version (v3,v4,v5)
+    ghost = ghost_content(ghost.api_version)
 
     posts = ghost.posts()
     post_id = posts[0]["id"]

@@ -31,7 +31,6 @@ class GhostClient(abc.ABC):
             content (bool)
         """
         for resource in resources:
-
             singular = resource.__name__.lower().split("resource")[0]
 
             setattr(self, singular, resource(self, content=content, single=True))
@@ -53,6 +52,8 @@ class GhostClient(abc.ABC):
         token = self._create_token(api_version)
         if token:
             headers["Authorization"] = f"Ghost {token}"
+
+        headers["accept-version"] = api_version
 
         return headers
 
@@ -185,7 +186,14 @@ class GhostClient(abc.ABC):
         verb = verb.lower()
 
         # url + /ghost/api/ + /v3/admin/ + ...
-        url = "/".join([self.url.strip("/"), "ghost/api", api_version, endpoint])
+        # in v5, api version is no longer sent in the URL
+        parts = [
+            self.url.strip("/"),
+            "ghost/api",
+            api_version if api_version != "v5" else "",
+            endpoint,
+        ]
+        url = "/".join([_ for _ in parts if _])
 
         error_count = 0
 
@@ -241,7 +249,7 @@ class GhostContent(GhostClient):
 
     def __post_init__(self):
         """
-        Setup the different Resources
+        Set up the different Resources
         """
 
         self.headers = {}
@@ -293,7 +301,7 @@ class GhostAdmin(GhostClient):
     headers: dict = field(init=False, repr=False)
     contentAPIKey: str = field(repr=False)
     adminAPIKey: str = field(repr=False)
-    api_version: str = "v4"  # or v3
+    api_version: str = "v4"  # or v3 or v5
 
     _session = requests.Session()
 
@@ -310,7 +318,6 @@ class GhostAdmin(GhostClient):
 
         self.headers = self._create_headers()
 
-        # resources:
         # resources:
         self._setup_resources_on_self(
             [

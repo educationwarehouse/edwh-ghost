@@ -14,7 +14,7 @@ with open("requirements-dev.txt") as f:
 setup(
     name="edwh-ghost",
     version="0.1.0",
-    description="Python client for Ghost API v3/v4",
+    description="Python client for Ghost API v3/v4/v5",
     url="http://github.com/educationwarehouse/edwh-ghost",
     author="Education Warehouse",
     author_email="remco.b@educationwarehouse.nl",
