@@ -23,6 +23,7 @@ setup(
     license="MIT",
     packages=["ghost"],
     zip_safe=False,
+    python_requires=">=3.7",
     install_requires=required,
     extras_require={"dev": dev_required},
 )
