@@ -3,4 +3,4 @@ pytest
 coverage
 Faker
 python-dotenv
-pip-tools
+pip-tools>=6.6.2
