@@ -6,6 +6,23 @@ from pathlib import Path
 from .abs_resources import GhostAdminResource, GhostContentResource, GhostResource
 
 
+__all__ = [
+    "GhostResource",
+    "GhostAdminResource",
+    "GhostContentResource",
+    "PostResource",
+    "PageResource",
+    "TagResource",
+    "MemberResource",
+    "UserResource",
+    "AuthorResource",
+    "SettingsResource",
+    "SiteResource",
+    "ImageResource",
+    "ThemeResource",
+]
+
+
 # Admin
 
 # todo: inherit create/update/get for some Resources with all values allowed for that specific resource
@@ -248,19 +265,3 @@ class ThemeResource(GhostResource):
 
 # todo: (admin) tiers, offers, webhooks, ...?
 # todo: (content): ...?
-
-__all__ = [
-    GhostResource,
-    GhostAdminResource,
-    GhostContentResource,
-    PostResource,
-    PageResource,
-    TagResource,
-    MemberResource,
-    UserResource,
-    AuthorResource,
-    SettingsResource,
-    SiteResource,
-    ImageResource,
-    ThemeResource,
-]
