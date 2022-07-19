@@ -1,19 +1,26 @@
 from setuptools import setup
+import os
 
-with open("README.md", "r", encoding="utf-8") as fh:
+print(
+    os.path.join(os.getcwd(), "requirements.txt"),
+    os.listdir(),
+    "requirements.txt" in os.listdir(),
+)
+
+with open(os.path.join(os.getcwd(), "README.md"), "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # pip-compile requirements.in -> requirements.txt
-with open("requirements.txt") as f:
+with open(os.path.join(os.getcwd(), "requirements.txt")) as f:
     required = f.read().splitlines()
 
 # pip-compile requirements-dev.in -> requirements-dev.txt
-with open("requirements-dev.txt") as f:
+with open(os.path.join(os.getcwd(), "requirements-dev.txt")) as f:
     dev_required = f.read().splitlines()
 
 setup(
     name="edwh-ghost",
-    version="0.1.0",
+    version="0.1.1",
     description="Python client for Ghost API v3/v4/v5",
     url="http://github.com/educationwarehouse/edwh-ghost",
     author="Education Warehouse",

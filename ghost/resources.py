@@ -248,3 +248,19 @@ class ThemeResource(GhostResource):
 
 # todo: (admin) tiers, offers, webhooks, ...?
 # todo: (content): ...?
+
+__all__ = [
+    GhostResource,
+    GhostAdminResource,
+    GhostContentResource,
+    PostResource,
+    PageResource,
+    TagResource,
+    MemberResource,
+    UserResource,
+    AuthorResource,
+    SettingsResource,
+    SiteResource,
+    ImageResource,
+    ThemeResource,
+]
