@@ -1,4 +1,4 @@
-from .client import GhostAdmin
+from .client import GhostAdmin, GhostContent
 from .exceptions import *
 from .resources import *
 
