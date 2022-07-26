@@ -24,6 +24,28 @@ class GhostClient(abc.ABC):
 
     _session = requests.Session()
 
+    # noinspection PyUnreachableCode
+    if False:
+        # Types, instanciated with _setup_resources_on_self:
+        # useful for IDE's
+        post: PostResource
+        posts: PostResource
+        page: PageResource
+        pages: PageResource
+        author: AuthorResource
+        authors: AuthorResource
+        tag: TagResource
+        tags: TagResource
+        image: ImageResource
+        images: ImageResource
+        theme: ThemeResource
+        themes: ThemeResource
+        member: MemberResource
+        members: MemberResource
+        user: UserResource
+        users: UserResource
+        # End types
+
     def _setup_resources_on_self(self, resources, content=False):
         """
         Arguments:
