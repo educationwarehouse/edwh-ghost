@@ -8,6 +8,8 @@ import time
 
 from datetime import datetime as dt
 
+import yarl
+
 from .exceptions import *
 from .resources import *
 
@@ -193,9 +195,6 @@ class GhostClient(abc.ABC):
         Returns:
           requests.Response: A response object.
         """
-        if endpoint.startswith("content") or not self.adminAPIKey:
-            endpoint += "?key=" + self.contentAPIKey
-
         if api_version is None:
             # default
             api_version = self.api_version
@@ -208,16 +207,16 @@ class GhostClient(abc.ABC):
 
         # url + /ghost/api/ + /v3/admin/ + ...
         # in v5, api version is no longer sent in the URL
-        parts = [
-            self.url.strip("/"),
-            "ghost/api",
-            api_version if api_version != "v5" else "",
-            endpoint,
-        ]
-        url = "/".join([_ for _ in parts if _])
+
+        url = yarl.URL(self.url) / "ghost/api" / (api_version if api_version != "v5" else "") / endpoint
+
+        if endpoint.startswith("content") or not self.adminAPIKey:
+            # yarl URL() % dict() encodes and adds query parameters as e.g. ?key=value
+            url %= {"key": self.contentAPIKey}
 
         error_count = 0
 
+        url = str(url)
         while error_count < MAX_ERROR_LIMIT:
             if verb == "get":
                 resp = self._session.get(url, headers=headers, params=params)
@@ -233,6 +232,7 @@ class GhostClient(abc.ABC):
                 resp = self._session.delete(url, headers=headers, params=params)
             else:
                 raise ValueError(f"Unknown verb: {verb}")
+
             if resp.status_code == 401 and not error_count:
                 # retry instantly with new headers
                 self.headers = self._create_headers()
