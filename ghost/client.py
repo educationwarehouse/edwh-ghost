@@ -13,7 +13,6 @@ from .resources import *
 
 MAX_ERROR_LIMIT = 3
 
-
 @dataclass
 class GhostClient(abc.ABC):
     url: str
@@ -28,22 +27,22 @@ class GhostClient(abc.ABC):
     if False:
         # Types, instanciated with _setup_resources_on_self:
         # useful for IDE's
-        post: PostResource
-        posts: PostResource
-        page: PageResource
-        pages: PageResource
-        author: AuthorResource
-        authors: AuthorResource
-        tag: TagResource
-        tags: TagResource
-        image: ImageResource
-        images: ImageResource
-        theme: ThemeResource
-        themes: ThemeResource
-        member: MemberResource
-        members: MemberResource
-        user: UserResource
-        users: UserResource
+        # post: PostResource
+        posts: PostResource = field(init=False, repr=False, compare=False)
+        page: PageResource = field(init=False, repr=False, compare=False)
+        pages: PageResource = field(init=False, repr=False, compare=False)
+        author: AuthorResource = field(init=False, repr=False, compare=False)
+        authors: AuthorResource = field(init=False, repr=False, compare=False)
+        tag: TagResource = field(init=False, repr=False, compare=False)
+        tags: TagResource = field(init=False, repr=False, compare=False)
+        image: ImageResource = field(init=False, repr=False, compare=False)
+        images: ImageResource = field(init=False, repr=False, compare=False)
+        theme: ThemeResource = field(init=False, repr=False, compare=False)
+        themes: ThemeResource = field(init=False, repr=False, compare=False)
+        member: MemberResource = field(init=False, repr=False, compare=False)
+        members: MemberResource = field(init=False, repr=False, compare=False)
+        user: UserResource = field(init=False, repr=False, compare=False)
+        users: UserResource = field(init=False, repr=False, compare=False)
         # End types
 
     def _setup_resources_on_self(self, resources, content=False):

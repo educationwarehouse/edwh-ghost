@@ -4,3 +4,4 @@ coverage
 Faker
 python-dotenv
 pip-tools>=6.6.2
+twine
