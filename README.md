@@ -90,6 +90,7 @@ authors.delete()  # error
 | Themes             | /themes    | ghost.themes.upload(), ghost.themes.activate() | test_7_themes                                               | &check; | &cross;  |
 | Site               | /site      | ghost.site()                                   | test_8_site_and_settings                                    | &check; | &cross;  |
 | Settings           | /settings  | ghost.settings()                               | test_8_site_and_settings                                    | ~[^3]   | &check;  |
+| User               | /users     | ghost.user(), ghost.users()                    | test_12_users, test_13_users_content                        | &check; | &cross;  |
 
 [^1]: these classes live in `ghost.resources`
 [^2]: where `ghost` is an instance of a `GhostClient` subclass (`GhostContent` or `GhostAdmin`)

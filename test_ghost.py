@@ -472,5 +472,31 @@ def test_11_ghost_paginate(ghost, faker):
 
 
 # @disable
+def test_12_users(ghost, faker):
+    users = ghost.users()
+    assert len(users), "No users found"
+
+    user: GhostResult = users[0]
+
+    assert user.as_dict()['id'], "user should have an ID"
+
+    assert not (any(users.delete()) or any(ghost.users.delete())), "Users should not be deletable"
+    assert user.delete() == False, "User should not be deletable"
+
+    with pytest.raises(GhostResponseException):
+        # not allowed
+        users.update(slug="new-slug")
+        user.update(slug="new-slug")
+
+
+def test_13_users_content(ghost, faker):
+    ghost = ghost_content(ghost.api_version)
+
+    with pytest.raises(GhostResponseException):
+        # should throw 404
+        ghost.users()
+
+
+# @disable
 def test_100_delete_new(ghost):
     _delete_all(ghost)
