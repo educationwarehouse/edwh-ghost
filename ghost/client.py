@@ -15,6 +15,7 @@ from .resources import *
 
 MAX_ERROR_LIMIT = 3
 
+
 @dataclass
 class GhostClient(abc.ABC):
     url: str
@@ -208,7 +209,12 @@ class GhostClient(abc.ABC):
         # url + /ghost/api/ + /v3/admin/ + ...
         # in v5, api version is no longer sent in the URL
 
-        url = yarl.URL(self.url) / "ghost/api" / (api_version if api_version != "v5" else "") / endpoint
+        url = (
+            yarl.URL(self.url)
+            / "ghost/api"
+            / (api_version if api_version != "v5" else "")
+            / endpoint
+        )
 
         if endpoint.startswith("content") or not self.adminAPIKey:
             # yarl URL() % dict() encodes and adds query parameters as e.g. ?key=value

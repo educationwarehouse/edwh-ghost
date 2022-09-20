@@ -20,7 +20,7 @@ with open(os.path.join(os.getcwd(), "requirements-dev.txt")) as f:
 
 setup(
     name="edwh-ghost",
-    version="0.1.8",
+    version="0.1.9",
     description="Python client for Ghost API v3/v4/v5",
     url="https://github.com/educationwarehouse/edwh-ghost",
     author="Education Warehouse",

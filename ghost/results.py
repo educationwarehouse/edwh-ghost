@@ -96,7 +96,9 @@ class GhostResultSet:
     """
 
     def __init__(self, lst: list, resource: GhostResource, meta: dict, request: dict):
-        self.__list__ = [GhostResult(_, resource) for _ in lst]
+        self.__list__ = [
+            (_ if isinstance(_, GhostResult) else GhostResult(_, resource)) for _ in lst
+        ]
         self._resource = resource
         meta["request"] = request
         self._meta = meta
@@ -119,6 +121,21 @@ class GhostResultSet:
         Get an item by index (resultset[idx])
         """
         return self.__list__[idx]
+
+    def __or__(self, other: GhostResultSet):
+        """
+        Set | Set -> Bigger Set
+
+        Note: some metadata will be lost since other._meta is not returned in the new set
+        """
+        if self._resource != other._resource:
+            raise TypeError("Can only combine ResultSets of the same Resource Type")
+
+        combined_list = [*self.__list__, *other.__list__]
+
+        return GhostResultSet(
+            combined_list, self._resource, self._meta, self._meta["request"]
+        )
 
     def as_dict(self):
         return {_["id"]: _.as_dict() for _ in self.__list__}

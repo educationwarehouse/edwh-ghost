@@ -497,6 +497,21 @@ def test_13_users_content(ghost, faker):
         ghost.users()
 
 
+def test_14_resultset_or(ghost):
+    posts: PostResource = ghost.posts
+    pages: PageResource = ghost.pages
+
+    posts.create(
+        {"title": "Test 14 pt 1", "tags": ["part-1"]},
+        {"title": "Test 14 pt 2", "tags": ["part-2"]},
+    )
+
+    with pytest.raises(TypeError):
+        posts.get() | pages.get()
+
+    assert len(posts.get(tag='part-1') | posts.get(tag='part-2')) == 2
+
+
 # @disable
 def test_100_delete_new(ghost):
     _delete_all(ghost)
