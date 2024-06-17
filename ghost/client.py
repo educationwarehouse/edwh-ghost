@@ -225,17 +225,17 @@ class GhostClient(abc.ABC):
         url = str(url)
         while error_count < MAX_ERROR_LIMIT:
             if verb == "get":
-                resp = self._session.get(url, headers=headers, params=params)
+                resp = self._session.get(url, headers=self.headers, params=params)
             elif verb == "post":
                 resp = self._session.post(
-                    url, headers=headers, params=params, files=files, json=json
+                    url, headers=self.headers, params=params, files=files, json=json
                 )
             elif verb == "put":
                 resp = self._session.put(
-                    url, headers=headers, params=params, files=files, json=json
+                    url, headers=self.headers, params=params, files=files, json=json
                 )
             elif verb == "delete":
-                resp = self._session.delete(url, headers=headers, params=params)
+                resp = self._session.delete(url, headers=self.headers, params=params)
             else:
                 raise ValueError(f"Unknown verb: {verb}")
 
