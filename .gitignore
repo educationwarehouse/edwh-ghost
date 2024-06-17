@@ -9,3 +9,6 @@ __pycache__
 .env
 .coverage
 dist/
+*.png
+*.jpg
+

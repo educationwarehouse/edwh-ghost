@@ -1,4 +1,5 @@
 from __future__ import annotations  # allow type hint without actual import
+
 import abc
 import json
 from abc import ABC

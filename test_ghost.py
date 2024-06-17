@@ -1,15 +1,14 @@
 # coverage run -m pytest -s
 
 import os
+import tempfile
 
 import pytest
-import tempfile
 import requests
-
 from dotenv import load_dotenv
 from faker import Faker
 
-from ghost import GhostAdmin, SUPPORTED_VERSIONS
+from ghost import SUPPORTED_VERSIONS, GhostAdmin
 from ghost.client import GhostContent
 from ghost.exceptions import *
 from ghost.resources import *
@@ -478,9 +477,11 @@ def test_12_users(ghost, faker):
 
     user: GhostResult = users[0]
 
-    assert user.as_dict()['id'], "user should have an ID"
+    assert user.as_dict()["id"], "user should have an ID"
 
-    assert not (any(users.delete()) or any(ghost.users.delete())), "Users should not be deletable"
+    assert not (
+        any(users.delete()) or any(ghost.users.delete())
+    ), "Users should not be deletable"
     assert user.delete() == False, "User should not be deletable"
 
     with pytest.raises(GhostResponseException):
@@ -509,7 +510,7 @@ def test_14_resultset_or(ghost):
     with pytest.raises(TypeError):
         posts.get() | pages.get()
 
-    assert len(posts.get(tag='part-1') | posts.get(tag='part-2')) == 2
+    assert len(posts.get(tag="part-1") | posts.get(tag="part-2")) == 2
 
 
 # @disable

@@ -5,7 +5,6 @@ from pathlib import Path
 
 from .abs_resources import GhostAdminResource, GhostContentResource, GhostResource
 
-
 __all__ = [
     "GhostResource",
     "GhostAdminResource",

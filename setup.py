@@ -1,5 +1,6 @@
-from setuptools import setup
 import os
+
+from setuptools import setup
 
 print(
     os.path.join(os.getcwd(), "requirements.txt"),
@@ -20,7 +21,7 @@ with open(os.path.join(os.getcwd(), "requirements-dev.txt")) as f:
 
 setup(
     name="edwh-ghost",
-    version="0.1.9",
+    version="0.1.10",
     description="Python client for Ghost API v3/v4/v5",
     url="https://github.com/educationwarehouse/edwh-ghost",
     author="Education Warehouse",
