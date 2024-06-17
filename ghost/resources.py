@@ -5,7 +5,6 @@ from pathlib import Path
 
 from .abs_resources import GhostAdminResource, GhostContentResource, GhostResource
 
-
 __all__ = [
     "GhostResource",
     "GhostAdminResource",
@@ -32,6 +31,53 @@ __all__ = [
 class PostResource(GhostAdminResource):
     # See: https://ghost.org/docs/admin-api/#the-post-object
     resource = "posts"
+
+    # noinspection PyUnreachableCode
+    if False:
+        # hinting only
+        slug: str
+        id: str
+        uuid: str
+        title: str
+        mobiledoc: str
+        html: str
+        comment_id: str
+        feature_image: str
+        featured: bool
+        status: str
+        visibility: str
+        created_at: str
+        updated_at: str
+        published_at: str
+        custom_excerpt: Optional[str]
+        codeinjection_head: Optional[str]
+        codeinjection_foot: Optional[str]
+        custom_template: Optional[str]
+        canonical_url: Optional[str]
+        tags: dict[str, dict]
+        authors: list[dict[str, Any]]
+        tiers: list[dict[str, Any]]
+        primary_author: dict[str, Any]
+        primary_tag: dict[str, Any]
+        email_segment: str
+        url: str
+        excerpt: str
+        reading_time: int
+        og_image: Optional[str]
+        og_title: Optional[str]
+        og_description: Optional[str]
+        twitter_image: Optional[str]
+        twitter_title: Optional[str]
+        twitter_description: Optional[str]
+        meta_title: Optional[str]
+        meta_description: Optional[str]
+        email_subject: Optional[str]
+        frontmatter: Optional[str]
+        feature_image_alt: Optional[str]
+        feature_image_caption: Optional[str]
+        email_only: bool
+        email: Optional[str]
+        newsletter: Optional[str]
 
     # slug,
     # id,
@@ -261,7 +307,6 @@ class ThemeResource(GhostResource):
         resp = self.PUT(name, "activate")
 
         return resp["themes"][0]["name"]
-
 
 # todo: (admin) tiers, offers, webhooks, ...?
 # todo: (content): ...?

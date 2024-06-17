@@ -266,8 +266,30 @@ class GhostClient(abc.ABC):
         raise IOError("Could not contact API correctly after 3 tries.")
 
 
-@dataclass
 class GhostContent(GhostClient):
+    # noinspection PyUnreachableCode
+    if False:
+        # only for hinting
+        post: PostResource
+        posts: PostResource
+        page: PageResource
+        pages: PageResource
+        author: AuthorResource
+        authors: AuthorResource
+        tag: TagResource
+        tags: TagResource
+        image: ImageResource
+        images: ImageResource
+        theme: ThemeResource
+        themes: ThemeResource
+        member: MemberResource
+        members: MemberResource
+        user: UserResource
+        users: UserResource
+
+        site: SiteResource
+        settings: SettingsResource
+
     def _check_keys(self):
         """
         This Client only requires a Content Key

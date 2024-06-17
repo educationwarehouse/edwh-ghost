@@ -165,6 +165,15 @@ def test_1_posts(ghost, faker):
     # markdown_post = ghost.post(slug="md")
     # print(markdown_post.as_dict())
 
+    item: PostResource = ghost.post(slug="third")
+
+    for k, v in item.__data__.items():
+        print(k,
+              v,
+              type(v)
+              )
+
+
 
 # @disable
 def test_2_pages(ghost, faker):
@@ -266,7 +275,7 @@ def _download_random_image(path="./temp.png"):
     Args:
       path (str): The path to save the image to. Defaults to ./temp.png
     """
-    URL = "https://source.unsplash.com/300x300"
+    URL = "https://picsum.photos/300/300"
 
     resp = requests.get(URL, stream=True)
     with open(path, "wb") as f:
