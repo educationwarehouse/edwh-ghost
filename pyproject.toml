@@ -4,16 +4,27 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "edwh-ghost"
-version = "0.1.10"
-description = "Python client for Ghost API v3/v4/v5"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+
+description = "Python client for Ghost API v3/v4/v5/v6"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.7"
 authors = [
-    { name = "Education Warehouse", email = "remco.b@educationwarehouse.nl" },
+    { name = "Remco Boerma", email = "remco.b@educationwarehouse.nl" },
+    { name = "Robin van der NOord", email = "robin.vdn@educationwarehouse.nl" },
 ]
 
-dynamic = ["dependencies", "optional-dependencies"]
+[tool.hatch.version]
+path = "ghost/__about__.py"
+
+[tool.semantic_release]
+branch = "master"
+version_variable = "ghost/__about__.py:__version__"
+change_log = "CHANGELOG.md"
+upload_to_repository = false
+upload_to_release = false
+build_command = "hatch build"
 
 [project.urls]
 Homepage = "https://github.com/educationwarehouse/edwh-ghost"
