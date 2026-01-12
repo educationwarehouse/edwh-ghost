@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edwh-ghost"
+version = "0.1.10"
+description = "Python client for Ghost API v3/v4/v5"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.7"
+authors = [
+    { name = "Education Warehouse", email = "remco.b@educationwarehouse.nl" },
+]
+
+dynamic = ["dependencies", "optional-dependencies"]
+
+[project.urls]
+Homepage = "https://github.com/educationwarehouse/edwh-ghost"
+
+[tool.setuptools]
+packages = ["ghost"]
+zip-safe = false
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+extend-exclude = ["jupyterlab"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["requirements-dev.txt"] }
