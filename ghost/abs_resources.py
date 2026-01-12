@@ -236,6 +236,14 @@ class GhostResource(abc.ABC):
                 break
             page += 1
 
+    def _default_formats(self):
+        api_version = self.ga.version_int
+
+        if api_version < 5:
+            return "html,mobiledoc"
+        else:
+            return "html,lexical"
+
     def _get_by_id(self, id: str, **_params):
         """
         Get a specific instance of this resource, by ID.
@@ -248,7 +256,7 @@ class GhostResource(abc.ABC):
           GhostResult: item with id
         """
 
-        params = {"formats": "html,mobiledoc", **_params}
+        params = {"formats": self._default_formats(), **_params}
         return self._get(id, params, single=True)
 
     def _get_by_filters(
@@ -273,7 +281,7 @@ class GhostResource(abc.ABC):
           GhostResultSet:
         """
         args = self._create_args(locals())
-        args["formats"] = "html,mobiledoc"
+        args["formats"] = self._default_formats()
 
         return self._get(params=args)
 
@@ -422,6 +430,12 @@ class GhostAdminResource(GhostResource, ABC):
         """
         return self.DELETE(id)
 
+    def _set_default_limit(self, filters):
+        if not filters.get("limit"):
+            # note: ghost 6 doesn't support this anymore
+            # -> 'all' will be limited to 100
+            filters["limit"] = "all" if self.ga.version_int < 6 else 100
+
     def _delete_by_filters(self, filters):
         """
         Find all items matching filters and delete these
@@ -430,8 +444,7 @@ class GhostAdminResource(GhostResource, ABC):
             list[bool]: success of each delete
         """
         try:
-            if not filters.get("limit"):
-                filters["limit"] = "all"
+            self._set_default_limit(filters)
 
             ids = self._get_by_filters(**filters)
             if not ids:
@@ -481,8 +494,7 @@ class GhostAdminResource(GhostResource, ABC):
         """
 
         try:
-            if not filters.get("limit"):
-                filters["limit"] = "all"
+            self._set_default_limit()
 
             ids = self._get_by_filters(**filters, fields=["id", "updated_at"])
             return [self._update_by_id(old["id"], data, old) for old in ids]

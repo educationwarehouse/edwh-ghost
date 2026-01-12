@@ -46,6 +46,16 @@ class GhostClient(abc.ABC):
         users: UserResource = field(init=False, repr=False, compare=False)
         # End types
 
+    @property
+    def version_int(self):
+        """
+        return the api version as an int
+
+        "v3" -> 3
+        """
+
+        return int(self.api_version.lstrip("v"))
+
     def _setup_resources_on_self(self, resources, content=False):
         """
         Arguments:
@@ -210,7 +220,7 @@ class GhostClient(abc.ABC):
         url = (
             yarl.URL(self.url)
             / "ghost/api"
-            / (api_version if api_version != "v5" else "")
+            / (api_version if self.version_int < 5 else "")
             / endpoint
         )
 
@@ -223,17 +233,17 @@ class GhostClient(abc.ABC):
         url = str(url)
         while error_count < MAX_ERROR_LIMIT:
             if verb == "get":
-                resp = self._session.get(url, headers=self.headers, params=params)
+                resp = self._session.get(url, headers=headers, params=params)
             elif verb == "post":
                 resp = self._session.post(
-                    url, headers=self.headers, params=params, files=files, json=json
+                    url, headers=headers, params=params, files=files, json=json
                 )
             elif verb == "put":
                 resp = self._session.put(
-                    url, headers=self.headers, params=params, files=files, json=json
+                    url, headers=headers, params=params, files=files, json=json
                 )
             elif verb == "delete":
-                resp = self._session.delete(url, headers=self.headers, params=params)
+                resp = self._session.delete(url, headers=headers, params=params)
             else:
                 raise ValueError(f"Unknown verb: {verb}")
 
@@ -247,18 +257,6 @@ class GhostClient(abc.ABC):
                 self.headers = self._create_headers()
                 error_count += 1
             else:
-                # on other error codes, print and return
-                if not resp.ok:
-                    # print(
-                    #     {
-                    #         "endpoint": url,
-                    #         "method": verb,
-                    #         "code": resp.status_code,
-                    #         "message": resp.text,
-                    #     },
-                    #     file=sys.stderr,
-                    # )
-                    pass
                 return resp
 
         raise IOError("Could not contact API correctly after 3 tries.")

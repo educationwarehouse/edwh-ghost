@@ -1,6 +1,6 @@
 # EDWH Ghost Client
 
-This Client is compatible with v3 and v4 of the Ghost CMS [Admin](https://ghost.org/docs/admin-api)
+This Client is compatible with v3, v4, v5 and v6 of the Ghost CMS [Admin](https://ghost.org/docs/admin-api)
 and [Content](https://ghost.org/docs/content-api/) API's.
 
 ### Installation

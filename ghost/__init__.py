@@ -3,4 +3,4 @@ from .exceptions import *
 from .resources import *
 from .results import GhostResult, GhostResultSet
 
-SUPPORTED_VERSIONS = ["v3", "v4", "v5"]
+SUPPORTED_VERSIONS = ["v3", "v4", "v5", "v6"]

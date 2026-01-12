@@ -241,7 +241,7 @@ def test_4_authors(ghost, faker):
 
     assert len(authors()) == 1, "'Ghost' should be the only author (at this point)"
 
-    ghost_author = ghost.author(slug="ghost")
+    ghost_author = ghost.author(slug="ghost-user")
     assert ghost_author.name == "Ghost"
 
     assert ghost.author(ghost_author.id) == ghost_author
@@ -265,9 +265,9 @@ def _download_random_image(path="./temp.png"):
     Args:
       path (str): The path to save the image to. Defaults to ./temp.png
     """
-    URL = "https://source.unsplash.com/300x300"
+    url = "https://picsum.photos/300/300"
 
-    resp = requests.get(URL, stream=True)
+    resp = requests.get(url, stream=True)
     with open(path, "wb") as f:
         f.write(resp.content)
 
