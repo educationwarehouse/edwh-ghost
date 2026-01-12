@@ -1,6 +1,9 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ghost"]
 
 [project]
 name = "edwh-ghost"
@@ -16,11 +19,11 @@ authors = [
 ]
 
 [tool.hatch.version]
-path = "ghost/__about__.py"
+path = "src/ghost/__about__.py"
 
 [tool.semantic_release]
 branch = "master"
-version_variable = "ghost/__about__.py:__version__"
+version_variable = "src/ghost/__about__.py:__version__"
 change_log = "CHANGELOG.md"
 upload_to_repository = false
 upload_to_release = false

@@ -8,11 +8,11 @@ import requests
 from dotenv import load_dotenv
 from faker import Faker
 
-from ghost import SUPPORTED_VERSIONS, GhostAdmin
-from ghost.client import GhostContent
-from ghost.exceptions import *
-from ghost.resources import *
-from ghost.results import GhostResult, GhostResultSet
+from src.ghost import SUPPORTED_VERSIONS, GhostAdmin
+from src.ghost.client import GhostContent
+from src.ghost.exceptions import *
+from src.ghost.resources import *
+from src.ghost.results import GhostResult, GhostResultSet
 
 
 def load_config():
