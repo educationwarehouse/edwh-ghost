@@ -1,7 +1,0 @@
-black
-pytest
-coverage
-Faker
-python-dotenv
-twine
-build

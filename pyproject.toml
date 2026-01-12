@@ -7,7 +7,7 @@ packages = ["src/ghost"]
 
 [project]
 name = "edwh-ghost"
-dynamic = ["version", "dependencies", "optional-dependencies"]
+dynamic = ["version"]
 
 description = "Python client for Ghost API v3/v4/v5/v6"
 readme = "README.md"
@@ -16,6 +16,24 @@ requires-python = ">=3.7"
 authors = [
     { name = "Remco Boerma", email = "remco.b@educationwarehouse.nl" },
     { name = "Robin van der NOord", email = "robin.vdn@educationwarehouse.nl" },
+]
+
+dependencies = [
+    "PyJWT>=2.4.0",
+    "requests",
+    "yarl",
+]
+
+[project.optional-dependencies]
+dev = [
+    "edwh",
+    "black",
+    "pytest",
+    "coverage",
+    "Faker",
+    "twine",
+    "build",
+    "python-dotenv",
 ]
 
 [tool.hatch.version]
@@ -41,8 +59,3 @@ target-version = "py313"
 line-length = 120
 extend-exclude = ["jupyterlab"]
 
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.txt"] }
-
-[tool.setuptools.dynamic.optional-dependencies]
-dev = { file = ["requirements-dev.txt"] }
