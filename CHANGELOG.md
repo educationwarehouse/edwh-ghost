@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.1 (2026-01-12)
+
+### Fix
+
+* Switch to src-layout ([`69d71ac`](https://github.com/educationwarehouse/edwh-ghost/commit/69d71ac917db8417c2f8461d2dd6393c52818982))
+
 ## v0.2.0 (2026-01-12)
 
 
