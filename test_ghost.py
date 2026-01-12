@@ -89,9 +89,7 @@ def test_1_posts(ghost, faker):
         "slug": "third",
         "status": "published",
         "authors": [{"slug": "ghost"}],
-        "tags": [
-            {"name": "pytest-created", "description": f"Posts created by Ghost API"}
-        ],
+        "tags": [{"name": "pytest-created", "description": f"Posts created by Ghost API"}],
         "html": "".join([f"<p>{_}</p>" for _ in content]),
         "excerpt": content[0],
         "featured": False,
@@ -479,9 +477,7 @@ def test_12_users(ghost, faker):
 
     assert user.as_dict()["id"], "user should have an ID"
 
-    assert not (
-        any(users.delete()) or any(ghost.users.delete())
-    ), "Users should not be deletable"
+    assert not (any(users.delete()) or any(ghost.users.delete())), "Users should not be deletable"
     assert user.delete() == False, "User should not be deletable"
 
     with pytest.raises(GhostResponseException):

@@ -97,9 +97,7 @@ class GhostResultSet:
     """
 
     def __init__(self, lst: list, resource: GhostResource, meta: dict, request: dict):
-        self.__list__ = [
-            (_ if isinstance(_, GhostResult) else GhostResult(_, resource)) for _ in lst
-        ]
+        self.__list__ = [(_ if isinstance(_, GhostResult) else GhostResult(_, resource)) for _ in lst]
         self._resource = resource
         meta["request"] = request
         self._meta = meta
@@ -134,9 +132,7 @@ class GhostResultSet:
 
         combined_list = [*self.__list__, *other.__list__]
 
-        return GhostResultSet(
-            combined_list, self._resource, self._meta, self._meta["request"]
-        )
+        return GhostResultSet(combined_list, self._resource, self._meta, self._meta["request"])
 
     def as_dict(self):
         return {_["id"]: _.as_dict() for _ in self.__list__}

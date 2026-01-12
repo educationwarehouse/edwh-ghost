@@ -90,9 +90,7 @@ class GhostClient(abc.ABC):
         return headers
 
     def _check_keys(self):
-        raise NotImplementedError(
-            "Implement _check_keys when inheriting from this class."
-        )
+        raise NotImplementedError("Implement _check_keys when inheriting from this class.")
 
     def _create_token(self, api_version: str = None):
         """
@@ -120,9 +118,7 @@ class GhostClient(abc.ABC):
                 "exp": iat + (DURATION_IN_MINUTES * 60),
                 "aud": f"/{api_version}/admin/",
             }
-            return jwt.encode(
-                payload, bytes.fromhex(secret), algorithm="HS256", headers=header
-            )
+            return jwt.encode(payload, bytes.fromhex(secret), algorithm="HS256", headers=header)
 
     def resource(self, name, single=False):
         """
@@ -155,9 +151,7 @@ class GhostClient(abc.ABC):
             )
 
         except JSONDecodeError as e:
-            raise GhostJSONException(
-                response.status_code, error_message="JSON Parsing Failed", exception=e
-            )
+            raise GhostJSONException(response.status_code, error_message="JSON Parsing Failed", exception=e)
 
     def GET(self, url, params=None):
         """
@@ -217,12 +211,7 @@ class GhostClient(abc.ABC):
         # url + /ghost/api/ + /v3/admin/ + ...
         # in v5, api version is no longer sent in the URL
 
-        url = (
-            yarl.URL(self.url)
-            / "ghost/api"
-            / (api_version if self.version_int < 5 else "")
-            / endpoint
-        )
+        url = yarl.URL(self.url) / "ghost/api" / (api_version if self.version_int < 5 else "") / endpoint
 
         if endpoint.startswith("content") or not self.adminAPIKey:
             # yarl URL() % dict() encodes and adds query parameters as e.g. ?key=value
@@ -235,13 +224,9 @@ class GhostClient(abc.ABC):
             if verb == "get":
                 resp = self._session.get(url, headers=headers, params=params)
             elif verb == "post":
-                resp = self._session.post(
-                    url, headers=headers, params=params, files=files, json=json
-                )
+                resp = self._session.post(url, headers=headers, params=params, files=files, json=json)
             elif verb == "put":
-                resp = self._session.put(
-                    url, headers=headers, params=params, files=files, json=json
-                )
+                resp = self._session.put(url, headers=headers, params=params, files=files, json=json)
             elif verb == "delete":
                 resp = self._session.delete(url, headers=headers, params=params)
             else:

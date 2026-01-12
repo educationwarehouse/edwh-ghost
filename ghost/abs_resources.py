@@ -355,9 +355,7 @@ class GhostAdminResource(GhostResource, ABC):
             None: this method only edits item
         """
         if item.get("markdown"):
-            raise NotImplementedError(
-                "Creating posts with markdown is currently not yet supported."
-            )
+            raise NotImplementedError("Creating posts with markdown is currently not yet supported.")
             md = item["markdown"]
 
             if is_iterable(md):
@@ -414,9 +412,7 @@ class GhostAdminResource(GhostResource, ABC):
         """
 
         if a and kw:
-            raise ValueError(
-                "Please use either only arguments or only keyword arguments."
-            )
+            raise ValueError("Please use either only arguments or only keyword arguments.")
         elif a:
             # return self._create_multiple(a)
             return [self._create_one(_) for _ in a]
